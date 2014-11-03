@@ -42,6 +42,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+Src/TestResults
 Src/Broadcaster.Tests/bin
 Src/Broadcaster.Tests/obj
 Src/Broadcaster.Tests/bin/Debug/Broadcaster.dll
