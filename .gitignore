@@ -41,3 +41,25 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+Src/Broadcaster.Tests/bin
+Src/Broadcaster.Tests/obj
+Src/Broadcaster.Tests/bin/Debug/Broadcaster.dll
+Src/Broadcaster.Tests/bin/Debug/Broadcaster.pdb
+Src/Broadcaster.Tests/bin/Debug/Broadcaster.Tests.dll
+Src/Broadcaster.Tests/bin/Debug/Broadcaster.Tests.pdb
+Src/Broadcaster.Tests/obj/Debug/Broadcaster.Tests.csproj.FileListAbsolute.txt
+Src/Broadcaster.Tests/obj/Debug/Broadcaster.Tests.csprojResolveAssemblyReference.cache
+Src/Broadcaster.Tests/obj/Debug/Broadcaster.Tests.dll
+Src/Broadcaster.Tests/obj/Debug/Broadcaster.Tests.pdb
+Src/Broadcaster.Tests/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+Src/Broadcaster.Tests/obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
+Src/Broadcaster.Tests/obj/Debug/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs
+Src/Broadcaster.Tests/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs
+Src/Broadcaster/bin
+Src/Broadcaster/obj
+Src/Broadcaster/obj/Debug/Broadcaster.csproj.FileListAbsolute.txt
+Src/Broadcaster/obj/Debug/Broadcaster.csprojResolveAssemblyReference.cache
+Src/Broadcaster/obj/Debug/Broadcaster.dll
+Src/Broadcaster/obj/Debug/Broadcaster.pdb
+Src/Broadcaster/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
