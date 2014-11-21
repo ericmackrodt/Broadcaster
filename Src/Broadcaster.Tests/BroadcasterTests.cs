@@ -11,7 +11,7 @@ namespace Broadcaster.Tests
         [TestInitialize]
         public void Initialize()
         {
-            broadcaster = new Broadcaster();
+            broadcaster = new BroadcastContainer();
         }
 
         [TestMethod]
@@ -19,13 +19,13 @@ namespace Broadcaster.Tests
         {
             var methodOne = new Action<DummyMessageOne>((m) => { });
 
-            broadcaster.Subscribe<DummyMessageOne>(methodOne);
+            broadcaster.Event<DummyEventOne>().Subscribe(methodOne);
 
-            var b = (broadcaster as Broadcaster);
+            var b = (broadcaster as BroadcastContainer);
 
-            Assert.AreEqual(1, b.Subscriptions.Count);
-            Assert.AreEqual(typeof(DummyMessageOne), b.Subscriptions[0].ChannelType);
-            Assert.AreEqual(methodOne, (b.Subscriptions[0] as Subscription<DummyMessageOne>).Actions[0]);
+            Assert.AreEqual(1, b.Events.Count);
+            Assert.AreEqual(typeof(DummyEventOne), b.Events[0].GetType());
+            Assert.AreEqual(methodOne, (b.Events[0] as DummyEventOne).Subscriptions[0]);
         }
 
         [TestMethod]
@@ -34,17 +34,17 @@ namespace Broadcaster.Tests
             var methodOne = new Action<DummyMessageOne>((m) => { });
             var methodTwo = new Action<DummyMessageTwo>((m) => { });
 
-            broadcaster.Subscribe<DummyMessageOne>(methodOne);
+            broadcaster.Event<DummyEventOne>().Subscribe(methodOne);
 
-            broadcaster.Subscribe<DummyMessageTwo>(methodTwo);
+            broadcaster.Event<DummyEventTwo>().Subscribe(methodTwo);
 
-            var b = (broadcaster as Broadcaster);
+            var b = (broadcaster as BroadcastContainer);
 
-            Assert.AreEqual(2, b.Subscriptions.Count);
-            Assert.AreEqual(typeof(DummyMessageOne), b.Subscriptions[0].ChannelType);
-            Assert.AreEqual(typeof(DummyMessageTwo), b.Subscriptions[1].ChannelType);
-            Assert.AreEqual(methodOne, (b.Subscriptions[0] as Subscription<DummyMessageOne>).Actions[0]);
-            Assert.AreEqual(methodTwo, (b.Subscriptions[1] as Subscription<DummyMessageTwo>).Actions[0]);
+            Assert.AreEqual(2, b.Events.Count);
+            Assert.AreEqual(typeof(DummyEventOne), b.Events[0].GetType());
+            Assert.AreEqual(typeof(DummyEventTwo), b.Events[1].GetType());
+            Assert.AreEqual(methodOne, (b.Events[0] as DummyEventOne).Subscriptions[0]);
+            Assert.AreEqual(methodTwo, (b.Events[1] as DummyEventTwo).Subscriptions[0]);
         }
 
         [TestMethod]
@@ -53,16 +53,16 @@ namespace Broadcaster.Tests
             var methodOne = new Action<DummyMessageOne>((m) => { });
             var methodTwo = new Action<DummyMessageOne>((m) => { });
 
-            broadcaster.Subscribe<DummyMessageOne>(methodOne);
+            broadcaster.Event<DummyEventOne>().Subscribe(methodOne);
 
-            broadcaster.Subscribe<DummyMessageOne>(methodTwo);
+            broadcaster.Event<DummyEventOne>().Subscribe(methodTwo);
 
-            var b = (broadcaster as Broadcaster);
+            var b = (broadcaster as BroadcastContainer);
 
-            Assert.AreEqual(1, b.Subscriptions.Count);
-            Assert.AreEqual(2, (b.Subscriptions[0] as Subscription<DummyMessageOne>).Actions.Count);
-            Assert.AreEqual(methodOne, (b.Subscriptions[0] as Subscription<DummyMessageOne>).Actions[0]);
-            Assert.AreEqual(methodTwo, (b.Subscriptions[0] as Subscription<DummyMessageOne>).Actions[1]);
+            Assert.AreEqual(1, b.Events.Count);
+            Assert.AreEqual(2, (b.Events[0] as DummyEventOne).Subscriptions.Count);
+            Assert.AreEqual(methodOne, (b.Events[0] as DummyEventOne).Subscriptions[0]);
+            Assert.AreEqual(methodTwo, (b.Events[0] as DummyEventOne).Subscriptions[1]);
         }
 
         [TestMethod]
@@ -73,23 +73,20 @@ namespace Broadcaster.Tests
             var methodThree = new Action<DummyMessageTwo>((m) => { });
             var methodFour = new Action<DummyMessageTwo>((m) => { });
 
-            broadcaster.Subscribe<DummyMessageOne>(methodOne);
+            broadcaster.Event<DummyEventOne>().Subscribe(methodOne);
+            broadcaster.Event<DummyEventOne>().Subscribe(methodTwo);
+            broadcaster.Event<DummyEventTwo>().Subscribe(methodThree);
+            broadcaster.Event<DummyEventTwo>().Subscribe(methodFour);
 
-            broadcaster.Subscribe<DummyMessageOne>(methodTwo);
+            var b = (broadcaster as BroadcastContainer);
 
-            broadcaster.Subscribe<DummyMessageTwo>(methodThree);
-
-            broadcaster.Subscribe<DummyMessageTwo>(methodFour);
-
-            var b = (broadcaster as Broadcaster);
-
-            Assert.AreEqual(2, b.Subscriptions.Count);
-            Assert.AreEqual(2, (b.Subscriptions[0] as Subscription<DummyMessageOne>).Actions.Count);
-            Assert.AreEqual(2, (b.Subscriptions[1] as Subscription<DummyMessageTwo>).Actions.Count);
-            Assert.AreEqual(methodOne, (b.Subscriptions[0] as Subscription<DummyMessageOne>).Actions[0]);
-            Assert.AreEqual(methodTwo, (b.Subscriptions[0] as Subscription<DummyMessageOne>).Actions[1]);
-            Assert.AreEqual(methodThree, (b.Subscriptions[1] as Subscription<DummyMessageTwo>).Actions[0]);
-            Assert.AreEqual(methodFour, (b.Subscriptions[1] as Subscription<DummyMessageTwo>).Actions[1]);
+            Assert.AreEqual(2, b.Events.Count);
+            Assert.AreEqual(2, (b.Events[0] as DummyEventOne).Subscriptions.Count);
+            Assert.AreEqual(2, (b.Events[1] as DummyEventTwo).Subscriptions.Count);
+            Assert.AreEqual(methodOne, (b.Events[0] as DummyEventOne).Subscriptions[0]);
+            Assert.AreEqual(methodTwo, (b.Events[0] as DummyEventOne).Subscriptions[1]);
+            Assert.AreEqual(methodThree, (b.Events[1] as DummyEventTwo).Subscriptions[0]);
+            Assert.AreEqual(methodFour, (b.Events[1] as DummyEventTwo).Subscriptions[1]);
         }
 
         [TestMethod]
@@ -97,12 +94,12 @@ namespace Broadcaster.Tests
         {
             var methodOne = new Action<DummyMessageOne>((m) => { });
 
-            broadcaster.Subscribe<DummyMessageOne>(methodOne);
-            broadcaster.Unsubscribe(methodOne);
+            broadcaster.Event<DummyEventOne>().Subscribe(methodOne);
+            broadcaster.Event<DummyEventOne>().Unsubscribe(methodOne);
 
-            var b = (broadcaster as Broadcaster);
+            var b = (broadcaster as BroadcastContainer);
 
-            Assert.AreEqual(0, b.Subscriptions.Count);
+            Assert.AreEqual(0, b.Events.Count);
         }
 
         [TestMethod]
@@ -111,15 +108,15 @@ namespace Broadcaster.Tests
             var methodOne = new Action<DummyMessageOne>((m) => { });
             var methodTwo = new Action<DummyMessageOne>((m) => { });
 
-            broadcaster.Subscribe<DummyMessageOne>(methodOne);
-            broadcaster.Subscribe<DummyMessageOne>(methodTwo);
-            broadcaster.Unsubscribe(methodOne);
+            broadcaster.Event<DummyEventOne>().Subscribe(methodOne);
+            broadcaster.Event<DummyEventOne>().Subscribe(methodTwo);
+            broadcaster.Event<DummyEventOne>().Unsubscribe(methodOne);
 
-            var b = (broadcaster as Broadcaster);
+            var b = (broadcaster as BroadcastContainer);
 
-            Assert.AreEqual(1, b.Subscriptions.Count);
-            Assert.AreEqual(1, (b.Subscriptions[0] as Subscription<DummyMessageOne>).Actions.Count);
-            Assert.AreEqual(methodTwo, (b.Subscriptions[0] as Subscription<DummyMessageOne>).Actions[0]);
+            Assert.AreEqual(1, b.Events.Count);
+            Assert.AreEqual(1, (b.Events[0] as DummyEventOne).Subscriptions.Count);
+            Assert.AreEqual(methodTwo, (b.Events[0] as DummyEventOne).Subscriptions[0]);
         }
 
         [TestMethod]
@@ -128,15 +125,15 @@ namespace Broadcaster.Tests
             var methodOne = new Action<DummyMessageOne>((m) => { });
             var methodTwo = new Action<DummyMessageTwo>((m) => { });
 
-            broadcaster.Subscribe<DummyMessageOne>(methodOne);
-            broadcaster.Subscribe<DummyMessageTwo>(methodTwo);
-            broadcaster.Unsubscribe(methodOne);
+            broadcaster.Event<DummyEventOne>().Subscribe(methodOne);
+            broadcaster.Event<DummyEventTwo>().Subscribe(methodTwo);
+            broadcaster.Event<DummyEventOne>().Unsubscribe(methodOne);
 
-            var b = (broadcaster as Broadcaster);
+            var b = (broadcaster as BroadcastContainer);
 
-            Assert.AreEqual(1, b.Subscriptions.Count);
-            Assert.AreEqual(1, (b.Subscriptions[0] as Subscription<DummyMessageTwo>).Actions.Count);
-            Assert.AreEqual(methodTwo, (b.Subscriptions[0] as Subscription<DummyMessageTwo>).Actions[0]);
+            Assert.AreEqual(1, b.Events.Count);
+            Assert.AreEqual(1, (b.Events[0] as DummyEventTwo).Subscriptions.Count);
+            Assert.AreEqual(methodTwo, (b.Events[0] as DummyEventTwo).Subscriptions[0]);
         }
 
         [TestMethod]
@@ -147,24 +144,20 @@ namespace Broadcaster.Tests
             var methodThree = new Action<DummyMessageTwo>((m) => { });
             var methodFour = new Action<DummyMessageTwo>((m) => { });
 
-            broadcaster.Subscribe<DummyMessageOne>(methodOne);
+            broadcaster.Event<DummyEventOne>().Subscribe(methodOne);
+            broadcaster.Event<DummyEventOne>().Subscribe(methodTwo);
+            broadcaster.Event<DummyEventTwo>().Subscribe(methodThree);
+            broadcaster.Event<DummyEventTwo>().Subscribe(methodFour);
+            broadcaster.Event<DummyEventOne>().Unsubscribe(methodOne);
+            broadcaster.Event<DummyEventTwo>().Unsubscribe(methodThree);
 
-            broadcaster.Subscribe<DummyMessageOne>(methodTwo);
+            var b = (broadcaster as BroadcastContainer);
 
-            broadcaster.Subscribe<DummyMessageTwo>(methodThree);
-
-            broadcaster.Subscribe<DummyMessageTwo>(methodFour);
-
-            broadcaster.Unsubscribe(methodOne);
-            broadcaster.Unsubscribe(methodThree);
-
-            var b = (broadcaster as Broadcaster);
-
-            Assert.AreEqual(2, b.Subscriptions.Count);
-            Assert.AreEqual(1, (b.Subscriptions[0] as Subscription<DummyMessageOne>).Actions.Count);
-            Assert.AreEqual(1, (b.Subscriptions[1] as Subscription<DummyMessageTwo>).Actions.Count);
-            Assert.AreEqual(methodTwo, (b.Subscriptions[0] as Subscription<DummyMessageOne>).Actions[0]);
-            Assert.AreEqual(methodFour, (b.Subscriptions[1] as Subscription<DummyMessageTwo>).Actions[0]);
+            Assert.AreEqual(2, b.Events.Count);
+            Assert.AreEqual(1, (b.Events[0] as DummyEventOne).Subscriptions.Count);
+            Assert.AreEqual(1, (b.Events[1] as DummyEventTwo).Subscriptions.Count);
+            Assert.AreEqual(methodTwo, (b.Events[0] as DummyEventOne).Subscriptions[0]);
+            Assert.AreEqual(methodFour, (b.Events[1] as DummyEventTwo).Subscriptions[0]);
         }
 
         [TestMethod]
@@ -178,8 +171,8 @@ namespace Broadcaster.Tests
                 result = m.Content;
             });
 
-            broadcaster.Subscribe<DummyMessageOne>(methodOne);
-            broadcaster.Broadcast(new DummyMessageOne() { Content = message });
+            broadcaster.Event<DummyEventOne>().Subscribe(methodOne);
+            broadcaster.Event<DummyEventOne>().Broadcast(new DummyMessageOne() { Content = message });
 
             Assert.AreEqual(message, result);
         }
@@ -201,9 +194,9 @@ namespace Broadcaster.Tests
                 resultTwo = m.Content;
             });
 
-            broadcaster.Subscribe<DummyMessageOne>(methodOne);
-            broadcaster.Subscribe<DummyMessageOne>(methodTwo);
-            broadcaster.Broadcast(new DummyMessageOne() { Content = message });
+            broadcaster.Event<DummyEventOne>().Subscribe(methodOne);
+            broadcaster.Event<DummyEventOne>().Subscribe(methodTwo);
+            broadcaster.Event<DummyEventOne>().Broadcast(new DummyMessageOne() { Content = message });
 
             Assert.AreEqual(message, resultOne);
             Assert.AreEqual(message, resultTwo);
@@ -226,9 +219,9 @@ namespace Broadcaster.Tests
                 resultTwo = m.Content;
             });
 
-            broadcaster.Subscribe<DummyMessageOne>(methodOne);
-            broadcaster.Subscribe<DummyMessageTwo>(methodTwo);
-            broadcaster.Broadcast(new DummyMessageOne() { Content = message });
+            broadcaster.Event<DummyEventOne>().Subscribe(methodOne);
+            broadcaster.Event<DummyEventTwo>().Subscribe(methodTwo);
+            broadcaster.Event<DummyEventOne>().Broadcast(new DummyMessageOne() { Content = message });
 
             Assert.AreEqual(message, resultOne);
             Assert.AreEqual("", resultTwo);
@@ -263,11 +256,11 @@ namespace Broadcaster.Tests
                 resultFour = m.Content;
             });
 
-            broadcaster.Subscribe<DummyMessageOne>(methodOne);
-            broadcaster.Subscribe<DummyMessageOne>(methodTwo);
-            broadcaster.Subscribe<DummyMessageTwo>(methodThree);
-            broadcaster.Subscribe<DummyMessageTwo>(methodFour);
-            broadcaster.Broadcast(new DummyMessageOne() { Content = message });
+            broadcaster.Event<DummyEventOne>().Subscribe(methodOne);
+            broadcaster.Event<DummyEventOne>().Subscribe(methodTwo);
+            broadcaster.Event<DummyEventTwo>().Subscribe(methodThree);
+            broadcaster.Event<DummyEventTwo>().Subscribe(methodFour);
+            broadcaster.Event<DummyEventOne>().Broadcast(new DummyMessageOne() { Content = message });
 
             Assert.AreEqual(message, resultOne);
             Assert.AreEqual(message, resultTwo);
@@ -305,12 +298,12 @@ namespace Broadcaster.Tests
                 resultFour = m.Content;
             });
 
-            broadcaster.Subscribe<DummyMessageOne>(methodOne);
-            broadcaster.Subscribe<DummyMessageOne>(methodTwo);
-            broadcaster.Subscribe<DummyMessageTwo>(methodThree);
-            broadcaster.Subscribe<DummyMessageTwo>(methodFour);
-            broadcaster.Broadcast(new DummyMessageOne() { Content = messageOne });
-            broadcaster.Broadcast(new DummyMessageTwo() { Content = messageTwo });
+            broadcaster.Event<DummyEventOne>().Subscribe(methodOne);
+            broadcaster.Event<DummyEventOne>().Subscribe(methodTwo);
+            broadcaster.Event<DummyEventTwo>().Subscribe(methodThree);
+            broadcaster.Event<DummyEventTwo>().Subscribe(methodFour);
+            broadcaster.Event<DummyEventOne>().Broadcast(new DummyMessageOne() { Content = messageOne });
+            broadcaster.Event<DummyEventTwo>().Broadcast(new DummyMessageTwo() { Content = messageTwo });
 
             Assert.AreEqual(messageOne, resultOne);
             Assert.AreEqual(messageOne, resultTwo);

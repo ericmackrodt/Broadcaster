@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Broadcaster
 {
-    public interface ISubscription
+    public interface IBroadcastEvent
     {
-        Type ChannelType { get; set; }
+        event EventHandler OnLastUnsubscribed;
     }
 }

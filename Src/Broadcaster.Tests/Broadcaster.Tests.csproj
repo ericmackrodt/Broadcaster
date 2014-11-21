@@ -57,6 +57,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="BroadcasterTests.cs" />
+    <Compile Include="DummyEventOne.cs" />
+    <Compile Include="DummyEventTwo.cs" />
     <Compile Include="DummyMessageTwo.cs" />
     <Compile Include="DummyMessageOne.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

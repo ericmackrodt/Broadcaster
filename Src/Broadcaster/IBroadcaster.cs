@@ -7,9 +7,6 @@ namespace Broadcaster
 {
     public interface IBroadcaster
     {
-        void Subscribe<T>(Action<T> action);
-        void Unsubscribe<T>(Action<T> action);
-        void Broadcast<T>(T message);
-        void Broadcast<T>(T message, bool throwWithoutSubscribers);
+        TEvent Event<TEvent>() where TEvent : IBroadcastEvent, new();
     }
 }
